@@ -56,4 +56,4 @@ Prometheus hoạt động tốt để ghi các time series data dạng số. Nó
 Prometheus là đáng tin cậy. Bạn có thể xem thống kê nào có sẵn về hệ thống của bạn, ngay cả trong điều kiện lỗi. Nếu bạn cần độ chính xác 100%, ví dụ cho mục đích thanh toán, Prometheus không phải là một lựa chọn tốt vì nó không chi tiết và đầy đủ.
 
 
-Phần tiếp [Prometheus server]()
+Phần tiếp [Prometheus server](docs/Prometheus_server.md)
