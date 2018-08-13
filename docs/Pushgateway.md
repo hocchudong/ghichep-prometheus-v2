@@ -61,7 +61,7 @@ echo "second_metric 99" | curl --data-binary @- http://192.168.40.93:9091/metric
 
 Kết quả: 
 
-![Job](https://raw.githubusercontent.com/locvx1234/prometheus-notes/master/images/push_job.png)
+![Job](https://raw.githubusercontent.com/locvx1234/ghichep-prometheus-v2/master/images/push_job.png)
 
 
 Push nhiều thứ phức tạp hơn trong group định danh bởi `{job="some_job",instance="some_instance"}`:
@@ -85,7 +85,7 @@ Chú thích :
 
 Kết quả:
 
-![Job2](https://raw.githubusercontent.com/locvx1234/prometheus-notes/master/images/push_job.png)
+![Job2](https://raw.githubusercontent.com/locvx1234/ghichep-prometheus-v2/master/images/push_job_detail.png)
 
 Xóa các metric được group bởi job và instance:
 
@@ -108,7 +108,7 @@ Prometheus server sẽ gắn các nhãn `job` và `instance` cho các metric đ�
 
 Viết dài dòng là vậy nhưng mà xem hình là hiểu :v
 
-![exported instance](https://raw.githubusercontent.com/locvx1234/prometheus-notes/master/images/exported_inststance.png)
+![exported instance](https://raw.githubusercontent.com/locvx1234/ghichep-prometheus-v2/master/images/exported_inststance.png)
 
 
 Tuy nhiên, cách này không hay, khi mà chúng ta muốn giữ lại mấy cái label đó, tiện cho nhiều việc như filter chẳng hạn. 

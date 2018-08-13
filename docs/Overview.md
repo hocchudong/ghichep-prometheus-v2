@@ -40,7 +40,7 @@ Chi tiết về từng thành phần, các hạ xem hồi sau sẽ rõ xD
 <a name="architecture"></a>
 ### Kiến trúc
 
-![Architecture](https://raw.githubusercontent.com/locvx1234/prometheus-notes/master/images/architecture-cb2ada1ece6.png)
+![Architecture](https://raw.githubusercontent.com/locvx1234/ghichep-prometheus-v2/master/images/architecture-cb2ada1ece6.png)
 
 Prometheus scrape các metric từ các job/exporter hoặc từ pushgateway. Nó sẽ lưu trữ data và chạy các rule qua các data này để tổng hợp và ghi lại time series mới từ dữ liệu đã tồn tại hoặc là tạo cảnh báo. Grafana hoặc các API consumer có thể sử dụng để vẽ những dữ liệu thu thập được. 
 
