@@ -338,3 +338,5 @@ Prometheus config file - /etc/prometheus/prometheus.yml
 sudo systemctl restart prometheus
 sudo systemctl status prometheus
 ```
+
+Phần tiếp [Alertmanager](Alertmanager.md)

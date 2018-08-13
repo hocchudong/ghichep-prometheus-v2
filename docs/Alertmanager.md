@@ -292,3 +292,5 @@ Checking /etc/prometheus/alert.rules.yml SUCCESS: 1 rules found
 sudo systemctl restart prometheus
 sudo systemctl status prometheus
 ```
+
+Phần tiếp [Pushgateway](Pushgateway.md)

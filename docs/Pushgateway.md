@@ -153,4 +153,6 @@ POST sử dụng giống như PUT, nhưng các metric cùng tên với các metr
 
 ##### DELETE method:
 
-DELETE sử dụng để xóa metric từ Pushgateway.  
+DELETE sử dụng để xóa metric từ Pushgateway.
+
+Phần tiếp [Client lib](#)

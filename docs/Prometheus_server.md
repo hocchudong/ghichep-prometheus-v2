@@ -388,3 +388,5 @@ labels:
 
 #### <relabel_config>
 Relabeling là công cụ mạnh mẽ cho việc tự động viết lại bộ label cho target trước khi nó được scrape. Nhiều bước relabeling có thể được cấu hình với mỗi cấu hình scrape. Chúng áp dụng cho bộ lablel của từng target theo thứ tự xuất hiện của chúng trong file cấu hình.
+
+Phần tiếp [Exporter](Exporter.md)
