@@ -68,20 +68,22 @@ Alertmanager được cấu hình qua command-line flag và file cấu hình
 #### 2.1 File cấu hình 
 
 Để xác định file cấu hình được load : 
-     
-     alertmanager --config.file=simple.yml
+
+```
+alertmanager --config.file=simple.yml
+```
  
 Các kiểu dữ liệu :
 
-- <duration>: a duration matching the regular expression [0-9]+(ms|[smhdwy])
-- <labelname>: a string matching the regular expression [a-zA-Z_][a-zA-Z0-9_]*
-- <labelvalue>: a string of unicode characters
-- <filepath>: a valid path in the current working directory
-- <boolean>: a boolean that can take the values true or false
-- <string>: a regular string
-- <secret>: a regular string that is a secret, such as a password
-- <tmpl_string>: a string which is template-expanded before usage
-- <tmpl_secret>: a string which is template-expanded before usage that is a secret
+- `<duration>`: a duration matching the regular expression [0-9]+(ms|[smhdwy])
+- `<labelname>`: a string matching the regular expression [a-zA-Z_][a-zA-Z0-9_]*
+- `<labelvalue>`: a string of unicode characters
+- `<filepath>`: a valid path in the current working directory
+- `<boolean>`: a boolean that can take the values true or false
+- `<string>`: a regular string
+- `<secret>`: a regular string that is a secret, such as a password
+- `<tmpl_string>`: a string which is template-expanded before usage
+- `<tmpl_secret>`: a string which is template-expanded before usage that is a secret
 
 Ví dụ về một file cấu hình alert : https://github.com/prometheus/alertmanager/blob/master/doc/examples/simple.yml
 

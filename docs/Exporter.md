@@ -168,7 +168,7 @@ Click vào tab Graph trong menu bar
 
 Trong ô Expression, gõ `node_memory_MemAvailable_bytes` và chọn `Execute`
 
-![MemAvailable]()
+![MemAvailable](https://raw.githubusercontent.com/locvx1234/ghichep-prometheus-v2/master/images/node_memory_Mem.png)
 
 
 Bình thường là kết quả nó sẽ trả về dạng `byte`, bạn muốn kết quả trả về dạng Megabyte,
