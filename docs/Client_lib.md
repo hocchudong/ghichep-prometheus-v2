@@ -52,9 +52,9 @@ hoặc cũng có thể gán một giá trị bất kỳ
 g.set(random.randint(1,101))
 ```
 
-Cuối cùng là push tới Pushgateway, với lable là job='batchA'
+Cuối cùng là push tới Pushgateway, với label là job='batchA'
 
-![Push client]()
+![Push client](https://raw.githubusercontent.com/locvx1234/ghichep-prometheus-v2/master/images/push_client.png)
 
 
 ### Viết Exporter 

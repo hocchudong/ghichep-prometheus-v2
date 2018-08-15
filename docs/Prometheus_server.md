@@ -4,7 +4,7 @@ Trong đó, node Server cài đặt Prometheus server và các module khác như
 
 Các node Exporter cài trên các máy cần monitor, tùy vào mục đích của từng máy để cài các Exporter hợp lý.
 
-![Topo]()
+![Topo](https://raw.githubusercontent.com/locvx1234/ghichep-prometheus-v2/master/images/topo.png)
 
 - [I. Cài đặt Prometheus server](#setup)
 - [II. Giải thích cấu hình](#config)
