@@ -1,18 +1,70 @@
-
+## I. Về các exporter
 
 Theo mặc định, Prometheus chỉ thu thập những số liệu về chính nó (ví dụ số yêu cầu nhận, lượng bộ nhớ tiêu thụ,...). Để có thể mở rộng thu thập từ các nguồn khác, sử dụng Exporter và các công cụ khác để tạo các metric. 
 
 Exporters - được phát triển bởi Prometheus và cộng đồng - cung cấp mọi thứ thông tin về cơ sở hạ tầng, cơ sở dữ liệu, web server, hệ thống tin nhắn, API, ...
 
-Một vài Exporter tiêu biểu: 
+#### Một vài Exporter tiêu biểu:
 
-- node_exporter : tạo ra các số liệu về hạ tầng, bao gồm CPU, memory, disk usage cũng như số liêu I/O, network.
-- blackbox_exporter : tạo ra các số liệu từ các đầu dò như HTTP, HTTPs để xác định tính khả dụng của các endpoint, thời gian phản hồi,...
-- mysqld_exporter : tập hợp các số liệu liên quan tới mysql server  
-- rabbitmq_exporter : output của exporter này liên quan tới RabbitMQ, bao gồm số lượng message được publish, số message sẵn sàng để gửi, kích cỡ các gói tin trong hàng đợi.
+- **node_exporter** : tạo ra các số liệu về hạ tầng, bao gồm CPU, memory, disk usage cũng như số liêu I/O, network.
+- **blackbox_exporter** : tạo ra các số liệu từ các đầu dò như HTTP, HTTPs để xác định tính khả dụng của các endpoint, thời gian phản hồi,...
+- **mysqld_exporter** : tập hợp các số liệu liên quan tới mysql server  
+- **rabbitmq_exporter** : output của exporter này liên quan tới RabbitMQ, bao gồm số lượng message được publish, số message sẵn sàng để gửi, kích cỡ các gói tin trong hàng đợi.
 - nginx-vts-exporter : cung cấp các số liệu về nginx server sử dụng module VTS bao gồm số lượng kết nối mở, số lượng phản hồi được gửi và tổng kích thước của các gói tin gửi và nhận
 
 Các exporter xem thêm tại : https://prometheus.io/docs/instrumenting/exporters/
+
+#### Metric
+
+Định dạng của một metric có dạng : 
+
+```
+<metric name>{<label name>=<label value>, ...}
+```
+
+Mỗi exporter sẽ chạy phơi data mà nó thu thập được để Prometheus server có thể pull về qua giao thức http.
+
+Thông thường, chúng ta có thể xem trực tiếp các metric này ở địa chỉ `ip-exporter:port/metrics`
+
+Ví dụ một đoạn metric tôi lấy ra từ `localhost:9100/metrics` 
+
+
+```
+...
+# HELP node_network_receive_bytes_total Network device statistic receive_bytes.
+# TYPE node_network_receive_bytes_total counter
+node_network_receive_bytes_total{device="ens3"} 7.086626e+06
+node_network_receive_bytes_total{device="lo"} 654508
+# HELP node_network_receive_compressed_total Network device statistic receive_compressed.
+# TYPE node_network_receive_compressed_total counter
+node_network_receive_compressed_total{device="ens3"} 0
+node_network_receive_compressed_total{device="lo"} 0
+# HELP node_network_receive_drop_total Network device statistic receive_drop.
+# TYPE node_network_receive_drop_total counter
+node_network_receive_drop_total{device="ens3"} 77
+node_network_receive_drop_total{device="lo"} 0
+...
+```
+
+Các dòng có dấu `#` chỉ để chú thích
+
+- `# HELP`: giải thích ý nghĩa của metric
+- `# TYPE`: loại giá trị
+
+Có 4 TYPE:
+
+- **counter**: là một bộ đếm tích lũy, được đặt về 0 khi restart. Ví dụ, có thể dùng `counter` để đếm số request được phục vụ, số lỗi, số task hoàn thành,... Không sử dụng cho gía trị có thể giảm như số tiến trình đang chạy. Trong trường hợp này, ta có thể sử dụng `gauge`
+
+- **gauge**: đại diện cho số liệu duy nhất, nó có thể lên hoặc xuống. Nó thường được sử dụng cho các giá trị đo
+- **histogram**: lấy mẫu quan sát (thường là những thứ như là thời lượng yêu cầu, kích thước phản hồi). Nó cũng cung cấp tổng của các giá trị đó.
+- **summary**: tương tự histogram, nó cung cấp tổng số các quan sát và tổng các giá trị đó, nó tính toán số lượng có thể  cấu hình qua một cửa sổ trượt
+
+
+Một số metric phổ biến mình đang cập nhập tại đây: 
+
+https://docs.google.com/spreadsheets/d/1tsHNQfAMfTlI-RELY-HWwbnE2QUH6oFEpFXGiY6LZGA/edit?usp=sharing
+
+## II. Cài đặt
 
 Chi tiết cách cài đặt của một số Exporter sẽ được cập nhật tại đây: 
 
@@ -76,7 +128,7 @@ sudo systemctl start node_exporter
 sudo systemctl enable node_exporter
 ```
 
-#### Trên máy Prometheus server:  
+#### Trên máy Prometheus server:
 
 Cấu hình Prometheus server để scrape Node Exporter 
 
@@ -116,8 +168,11 @@ Click vào tab Graph trong menu bar
 
 Trong ô Expression, gõ `node_memory_MemAvailable_bytes` và chọn `Execute`
 
+![MemAvailable]()
+
+
 Bình thường là kết quả nó sẽ trả về dạng `byte`, bạn muốn kết quả trả về dạng Megabyte,
-đơn giản với một phép toán cấp 2 như sau :  `node_memory_MemAvailable_bytes/1024/1024`
+đơn giản với một phép toán như sau :  `node_memory_MemAvailable_bytes/1024/1024`
 
 
 Để kiểm chứng kết quả, check memory máy cài Node exporter:
@@ -128,7 +183,10 @@ free -h
 
 Bonus : Ngôn ngữ truy vấn Prometheus cung cấp một hàm cho việc tổng hợp kết quả.
 
-vd : `avg_over_time(node_memory_MemAvailable_bytes[5m])/1024/1024` : trung bình Available Memory trong 5 phút 
+vd : `avg_over_time(node_memory_MemAvailable_bytes[5m])/1024/1024` : Available Memory trung bình trong 5 phút 
+
+Xem thêm các hàm tại : https://prometheus.io/docs/prometheus/latest/querying/functions/
+
 
 <a name="blackbox"></a>
 ### 2. Blackbox exporter

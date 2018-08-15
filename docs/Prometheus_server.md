@@ -1,9 +1,16 @@
+Sơ đồ cài đặt tổng quát bao gồm một node Server và các node Exporter.
 
-- [I. Cài đặt](#setup)
+Trong đó, node Server cài đặt Prometheus server và các module khác như Alertmanager, Pushgateway, Grafana
+
+Các node Exporter cài trên các máy cần monitor, tùy vào mục đích của từng máy để cài các Exporter hợp lý.
+
+![Topo]()
+
+- [I. Cài đặt Prometheus server](#setup)
 - [II. Giải thích cấu hình](#config)
 
 <a name="setup"></a>
-## I. Cài đặt 
+## I. Cài đặt Prometheus server
 
 #### 0. Yêu cầu :
 Ubuntu 16.04
@@ -211,6 +218,7 @@ Flag : `--config.file`
 
 Định nghĩa một số kiểu giá trị: (để chú giải tiếng anh cho nó dễ hiểu :><)
 
+```
 <boolean>: a boolean that can take the values true or false
 <duration>: a duration matching the regular expression [0-9]+(ms|[smhdwy])
 <labelname>: a string matching the regular expression [a-zA-Z_][a-zA-Z0-9_]*
@@ -222,6 +230,7 @@ Flag : `--config.file`
 <string>: a regular string
 <secret>: a regular string that is a secret, such as a password
 <tmpl_string>: a string which is template-expanded before usage
+```
 
 Ví dụ về file cấu hình mẫu : https://github.com/prometheus/prometheus/blob/release-2.3/config/testdata/conf.good.yml
 
