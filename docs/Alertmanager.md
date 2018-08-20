@@ -13,6 +13,8 @@ Danh mục tìm hiểu:
 - [2. Cấu hình](#config)
 - [3. Cấu hình Prometheus trỏ đến Alertmanager](#config_server)
 - [4. Tạo rule alert](#rule_alert)
+- [5. Amtool](#amtool)
+- [99. Vọc vạch thêm](#addition)
 
 
 <a name="alertmanager"></a>
@@ -294,5 +296,176 @@ Checking /etc/prometheus/alert.rules.yml SUCCESS: 1 rules found
 sudo systemctl restart prometheus
 sudo systemctl status prometheus
 ```
+
+<a name="amtool"></a>
+### 5. Amtool
+
+`amtool` là một cli tool để tương tác với Alertmanager API
+
+#### 5.1 Cài đặt:
+
+```
+go get github.com/prometheus/alertmanager/cmd/amtool
+```
+
+#### 5.2 Cấu hình:
+
+Tạo file cấu hình theo đường dẫn mặc định `$HOME/.config/amtool/config.yml` hoặc `/etc/amtool/config.yml`
+
+Nội dung file cấu hình mẫu như sau:
+
+```
+# Define the path that amtool can find your `alertmanager` instance at
+alertmanager.url: "http://localhost:9093"
+
+# Override the default author. (unset defaults to your username)
+author: me@example.com
+
+# Force amtool to give you an error if you don't include a comment on a silence
+comment_required: true
+
+# Set a default output format. (unset defaults to simple)
+output: extended
+
+# Set a default receiver
+receiver: team-X-pager
+```
+
+#### 5.3 Ví dụ
+
+Check config:
+
+```
+# amtool check-config /etc/alertmanager/alertmanager.yml 
+Checking '/etc/alertmanager/alertmanager.yml'  SUCCESS
+Found:
+ - global config
+ - route
+ - 0 inhibit rules
+ - 1 receivers
+ - 0 templates
+```
+
+Xem tất cả các alert firing:
+
+```
+# amtool alert
+Alertname  Starts At                Summary                                
+CheckRAM   2018-08-20 16:10:49 +07  Instance 192.168.40.118:9100 RAM high
+```
+
+Xem chi tiết hơn của kết quả trên:
+
+```
+amtool -o extended alert
+```
+
+Sử dụng thêm các truy vấn mạnh mẽ của Alertmanager:
+
+```
+amtool -o extended alert query alertname="CheckRAM"
+amtool -o extended alert query instance=~".+9100"
+
+```
+
+Silence một cảnh báo:
+
+```
+# amtool silence add alertname=Test_Alert
+f176141f-1131-40e5-9273-4cf9953e15ed
+
+# amtool silence add alertname="Test_Alert" instance=~".+0"
+77189354-bb96-485c-9102-24f27134c11a
+```
+
+Xem các Silent:
+
+```
+~# amtool silence query
+ID                                    Matchers                            Ends At                  Created By  Comment  
+f176141f-1131-40e5-9273-4cf9953e15ed  alertname=Test_Alert                2018-08-20 11:38:23 UTC  locvx1234            
+77189354-bb96-485c-9102-24f27134c11a  alertname=Test_Alert instance=~.+0  2018-08-20 11:39:07 UTC  locvx1234            
+```
+
+Xóa một Silent:
+
+```
+amtool silence expire f176141f-1131-40e5-9273-4cf9953e15ed
+```
+
+Xóa tất cả các Silent:
+
+```
+amtool silence expire $(amtool silence query -q)
+```
+
+
+<a name="addition"></a>
+### 99. Vọc vạch thêm
+
+P/s Phần này chưa hoàn chỉnh 
+
+Phần này mình tham khảo cách làm của AODH gửi cảnh báo cho Slack
+
+Link tham khảo : https://github.com/thaonguyenvan/meditech-thuctap/blob/master/ThaoNV/Tim%20hieu%20OpenStack/docs/telemetry/docs/aodh-alarm.md
+
+Ý tưởng là khai thác thêm việc Prometheus server gửi nội dung cảnh báo cho Alertmanager, thay vì dùng Alertmanager thì mình dựng một con Flask server nhận data và xử lý việc gửi cảnh báo đi.
+
+Cách làm như sau: 
+
+Mình cần biết nội dung Prometheus server gửi cho Alertmanager, để làm điểu này thì sử dụng `netcat`:
+
+```
+nc -lknv 6868
+```
+
+Bằng cách này, port `6868` được cấu hình listenning, sau đó cấu hình Prometheus server gửi data về port này
+
+```
+vi /etc/prometheus/prometheus.yml
+```
+
+```
+...
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - localhost:6868
+...
+```
+
+Khởi động lại Prometheus để nhận cấu hình:
+
+```
+systemctl restart prometheus
+```
+
+Khi có một query alert được khớp, ở section của `netcat` sẽ có nội dung data.
+
+![Netcat](https://raw.githubusercontent.com/locvx1234/ghichep-prometheus-v2/master/images/netcat.png)
+
+Dựa trên nội dung bắt được (dạng json), mình chạy một Flask server trên port `5123` để xử lý nội dung và gửi cảnh báo:
+
+```
+pip install flask
+pip install requests
+mkdir flask
+cd flask
+wget https://gist.githubusercontent.com/locvx1234/7daf87ee5e555e9fd1721961c6458e85/raw/5c4e66760e58bc1baf1917f54190f148c8add59d/app.py
+
+cd
+export FLASK_APP=flask/app.py
+flask run --host=0.0.0.0 --port=5123
+```
+
+Sau đó cấu hình Prometheus để gửi cảnh báo đến port `5123` (như trên)
+
+Kết quả mình nhận được là có thông báo trả về nhưng có nhiều thông báo liên tục
+
+![Slack](https://raw.githubusercontent.com/locvx1234/ghichep-prometheus-v2/master/images/send_to_slack.png)
+
+//TODO : xử lý return của Flask về Prometheus
 
 Phần tiếp [Pushgateway](Pushgateway.md)
