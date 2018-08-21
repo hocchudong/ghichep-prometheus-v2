@@ -11,6 +11,6 @@ Ghi chép về Prometheus
 
 [5. Pushgateway](docs/Pushgateway.md)
 
-[6. Client lib](#)
+[6. Client lib](docs/Client_lib.md)
 
 [7. Visualize](docs/Visualize.md)
